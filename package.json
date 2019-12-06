@@ -4,6 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "actions-http": "^2.0.13"
+    "actions-http": "^2.0.13",
+    "memtable": "^2.0.0-alpha.12",
+    "unirest": "^0.6.0",
+    "url-join": "^4.0.1",
+    "uuid": "^3.3.3"
   }
 }
