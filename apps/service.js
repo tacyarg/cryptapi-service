@@ -1,0 +1,40 @@
+const assert = require('assert')
+const cryptapi = require('cryptapi')()
+const { transactions } = require('../models')()
+// const { loop, ONE_MINUTE_MS } = require('../libs/utils')
+
+module.exports = async config => {
+  console.log(config)
+  const { callbackURL, btcAddress } = config
+  assert(callbackURL, 'requires callbackURL')
+
+  return {
+    async handleCallback(params) {
+      console.log('CALLBACK', params)
+      return params
+    },
+    async btcCreateTransaction({ amount }) {
+      amount = parseFloat(amount)
+      assert(amount > 0.01, 'requires amount of at least 0.01 btc')
+      const tx = transactions.create(amount, btcAddress)
+
+      const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}`)
+
+      return transactions.update(tx.id, {
+        from: api.address_in,
+        to: api.address_out,
+        callbackURL: api.callback_url,
+        status: api.status
+      }) 
+    },
+    async btcGetInfo() {
+      return cryptapi.btcInfo()
+    },
+    async btcLogs({ callback }) {
+      return cryptapi.btcLogs(callback)
+    },
+    async listTransactions() {
+      return [...transactions.values()]
+    }
+  }
+}
