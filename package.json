@@ -5,9 +5,17 @@
   "license": "MIT",
   "dependencies": {
     "actions-http": "^2.0.13",
+    "cryptapi": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.15",
     "memtable": "^2.0.0-alpha.12",
+    "moment": "^2.24.0",
     "unirest": "^0.6.0",
     "url-join": "^4.0.1",
     "uuid": "^3.3.3"
+  },
+  "scripts": {
+    "start": "node index.js --max_old_space_size=4096",
+    "service": "name=service yarn start"
   }
 }

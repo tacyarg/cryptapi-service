@@ -1,30 +1,30 @@
+require('dotenv').config()
+const assert = require('assert')
+const { parseEnv } = require('./libs/utils')
 
-// start the server
-const WebServer = require('actions-http')
-const Tables = require('./models')
-const API = require('./libs/api')
+const config = parseEnv(process.env)
+assert(config.name, 'app requires a name')
 
-// initialize local state
-const tables = Tables()
-const cryptapi = API({
-  baseURL: 'https://cryptapi.io/api/'
+const App = require(`./apps/${config.name}`)
+assert(App, 'app not found')
+
+const Web = require('actions-http')
+
+App(config)
+  .then((x={}) => {
+    console.log(config.name, 'Online')
+    return Web(config, x)
+  })
+  .catch(e => {
+    console.log(e)
+    process.exit(1)
+  })
+
+process.on('unhandledRejection', function(err, promise) {
+  console.log(err)
+  process.exit(1)
 })
-
-// start app and expose api
-WebServer({
-  port: 3000
-}, {
-  async ping(params) {
-    return 'pong'
-  },
-  async echo(params) {
-    console.log('echo', params)
-    return params
-  },
-  handleCallback() {
-    //TODO: handle api callback
-  },
-  getInfo(params) {
-    return cryptapi.get('/btc/info')
-  }
+process.on('uncaughtException', function(err) {
+  console.log(err.stack)
+  process.exit(1)
 })

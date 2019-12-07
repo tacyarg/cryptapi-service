@@ -1,5 +1,5 @@
 const Table = require('memtable')
-
+const lodash = require('lodash')
 exports.CreateMemtable = (cfg={}) => {
   return Table({
     primary: 'id',
