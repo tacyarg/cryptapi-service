@@ -4,6 +4,7 @@ exports.CreateMemtable = (cfg={}) => {
   return Table({
     primary: 'id',
     indexes: [
+        { name: 'type', required: true, unique: false, index: 'type' },
       // { name: 'login', required: true, unique: true, index: 'login' },
       // { name: 'email', required: false, unique: true, index: 'email' },
       // { name: 'name', required: false, unique: false, index: 'name' },
