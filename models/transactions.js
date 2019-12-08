@@ -5,6 +5,7 @@ const lodash = require('lodash')
 const Defaults = p => {
   return {
     id: uuid(),
+    type: 'basic',
     created: Date.now(),
     updated: Date.now(),
     callbackURL: null,
