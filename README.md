@@ -9,7 +9,7 @@ This service allows anyone to easliy start and maintain a fully functional payme
 This service solves the problem of not having a way to transactionally facillitate deposits & withdraws using the cryptapi. This thin layer uses our wrapper and some application logic to create an abstraction. This abstraction allows our service to provide a simple and easy to use api, without having low-level understanding of the underlying cryptAPI.
 
 ## Why would I use this insted of the api directly?
-When using the cryptapi directy, by design, you have no way historically obtain transactions other than by using the `callbackURL` to listen for completed transactions and storing that locally. When having to do this, it makes things complicated to store and trace in my internal systems due to the requirement of always needing to have a listener online. My service solve this by allowing you to replicate horizontally.
+When using the cryptapi directy, by design, you have no way historically obtain transactions other than by using the `callbackURL` to listen for completed transactions and storing that locally. When having to do this, it makes things complicated to store and trace due to the requirement of always needing to have a listener online. This service solves this by allowing you to replicate horizontally with a basic efemeral instance.
 
 ## How do I know this code is stable?
 We maintain and support this library for you, here at [ChipSoft](https://chips.gg). This allows you to focus on intigrating payment solutions rather than worrying about the implementation details. Using this lib, you can have a working payment processed in minutes, no signup required.
