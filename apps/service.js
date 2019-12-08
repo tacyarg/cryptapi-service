@@ -15,11 +15,10 @@ module.exports = async config => {
     },
     async btcCreateTransaction({ amount }) {
       amount = parseFloat(amount)
-      assert(amount > 0.01, 'requires amount of at least 0.01 btc')
+      assert(amount > config.btcLimitAmount, `requires amount of at least ${config.btcLimitAmount} btc`)
+      
       const tx = transactions.create(amount, btcAddress)
-
       const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}`)
-
       return transactions.update(tx.id, {
         from: api.address_in,
         to: api.address_out,
