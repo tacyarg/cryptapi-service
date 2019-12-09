@@ -23,14 +23,15 @@ module.exports = async config => {
       assert(s.txid === txid, `invalid secret found for id:${txid}`)
 
       // if the tx and secret are valid, we allow the caller to update the state.
+      const confirmations = parseInt(params.confirmations) || 0
       return transactions.set({
         ...tx,
-        confirmations: params.confirmations,
+        confirmations,
         txidIn: params.txid_in,
         txidOut: params.txid_out,
         value: params.value,
         valueForwarded: params.value_forwarded,
-        status: parseInt(params.confirmations) > 1 ? 'completed' : 'waitConfirmations'
+        status: confirmations > 1 ? 'completed' : 'waitConfirmations'
       })
     },
     async getTransaction({ transactionid }) {
