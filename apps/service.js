@@ -17,9 +17,9 @@ module.exports = async config => {
       assert(tx, `no transaction found using id:${txid}`)
 
       /// does the secret match?
-      const secret = secrets.get(secret)
-      assert(secret, `secret not found`)
-      assert(secret.txid === txid, `invalid secret found for id:${txid}`)
+      const s = secrets.get(secret)
+      assert(s, `secret not found`)
+      assert(s.txid === txid, `invalid secret found for id:${txid}`)
 
       // if the tx and secret are valid, we allow the caller to update the state.
       const confirmations = parseInt(params.confirmations)
