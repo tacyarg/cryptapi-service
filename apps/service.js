@@ -84,7 +84,7 @@ module.exports = async config => {
 
       // create a tx and secret to pass to our trusted caller.
       const address = config[`${ticker}Address`]
-      assert(assert, 'please provide the supported ticker address in your .env')
+      assert(address, 'please provide the supported ticker address in your .env')
 
       const tx = transactions.create(amount, address)
       const secret = secrets.create(tx.id)
