@@ -39,7 +39,8 @@ module.exports = async config => {
         from: api.address_in,
         to: api.address_out,
         callbackURL: api.callback_url,
-        status: api.status
+        status: api.status,
+        qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:${api.address_in}?amount=${amount}`
       })
     },
     async btcGetInfo() {
