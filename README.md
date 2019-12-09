@@ -2,6 +2,8 @@
 This service is a thin layer on top of the [cryptapi](https://cryptapi.io/) cryptocurrency payment gateway.
 Internally we utilize our Nodejs Library [cryptapi](https://github.com/tacyarg/cryptapi), to get started you may want to have a look there.
 
+> Bitcoin, Bitcoin Cash, Litecoin, Ethereum, Monero, IOTA, ...
+
 ## What does this service do?
 This service allows anyone to easliy start and maintain a fully functional payment gatewayAPI. Create transactions, process payments, using any currency supported by cryptapi. Simply start the service, interact with the api, and process crypto payments.
 

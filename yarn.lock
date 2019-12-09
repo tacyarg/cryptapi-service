@@ -164,10 +164,10 @@ cors@^2.8.5:
     object-assign "^4"
     vary "^1"
 
-cryptapi@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/cryptapi/-/cryptapi-1.0.1.tgz#3c316ab1aebcde2f5bccdd4cae9bd5078b48425a"
-  integrity sha512-utlurMlQSOZWtnuczG77r8YgFJFMRoTKFDFES9f68Fpg6PaMYPmjw6nBpkdKVULeuTOlkPUp6OecLc5ZITRX6A==
+cryptapi@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/cryptapi/-/cryptapi-1.1.2.tgz#328a48067a42432c3267991d7daf4272b7f7d152"
+  integrity sha512-3WFnd4enLFDUE87PvU4nxMevdTrK56umqlhPZ2kHAmfIcS+2afTHIKzBd6ioXrEwk+i1uYUng0m7fAaapMVmqA==
   dependencies:
     unirest "^0.6.0"
     url-join "^4.0.1"

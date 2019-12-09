@@ -12,18 +12,36 @@ module.exports = async config => {
   // cache the exchange rates for btc every min
   let EXCHANGE_RATES = {}
   loop(async () => {
-    const { prices } = await cryptapi.btcInfo()
-    const keys = Object.keys(prices)
-    EXCHANGE_RATES = keys.reduce((memo, k) => {
-      memo[k] = parseFloat(prices[k])
-      return memo
-    }, {})
+    const tickers = cryptapi.getSupportedTickers()
+
+    for (t of tickers) {
+      const { prices } = await cryptapi._getInfo(t)
+      // console.log('_getInfo', t, prices)
+      const keys = Object.keys(prices)
+      EXCHANGE_RATES[t] = keys.reduce((memo, k) => {
+        memo[k] = parseFloat(prices[k])
+        return memo
+      }, {})
+    }
+
   }, ONE_MINUTE_MS)
+
+  const getExchangeRates = (ticker, currency = 'USD', amount = 1) => {
+    const rates = EXCHANGE_RATES[ticker]
+    return currency ? parseUSD(rates[currency] * amount) : rates
+  }
 
   // public API
   return {
-    async btcUSDExchangeRate({ currency = 'USD', amount=1 }) {
-      return parseUSD(EXCHANGE_RATES[currency] * amount)
+    async getSupportedTickers() {
+      return cryptapi.getSupportedTickers()
+    },
+    async getTickerExchangeRates({ ticker, currency, amount }) {
+      assert(ticker, 'ticker not supported.')
+      assert(EXCHANGE_RATES[ticker], 'ticker not supported.')
+      assert(EXCHANGE_RATES[ticker][currency], 'ticker currency not supported.')
+
+      return getExchangeRates(ticker, currency, amount)
     },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
@@ -58,7 +76,7 @@ module.exports = async config => {
     async listTransactionsByType(type = 'btc') {
       return transactions.getBy('type', type)
     },
-    async btcCreateTransaction({ amount, to, from }) {
+    async createTransaction({ ticker = 'btc', amount, to, from }) {
       amount = parseFloat(amount)
       assert(amount >= config.coinLimit, `requires amount of at least ${config.coinLimit} btc`)
 
@@ -67,13 +85,13 @@ module.exports = async config => {
       const secret = secrets.create(tx.id)
 
       // call our payment processor including the secret.
-      const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, { pending: 1 })
-      assert(api, 'cryptapi.btcCreateAddress failure')
-      assert(api.address_in, 'cryptapi.btcCreateAddress failure')
+      const api = await cryptapi._createAddress(ticker, btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, { pending: 1 })
+      assert(api, 'cryptapi._createAddress failure')
+      assert(api.address_in, 'cryptapi._createAddress failure')
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
-        fiatValue: parseUSD(EXCHANGE_RATES['USD'] * amount),
+        fiatValue: getExchangeRates(ticker, 'USD', amount),
         type: 'btc',
         from: api.address_in,
         to: api.address_out,
@@ -81,12 +99,6 @@ module.exports = async config => {
         qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:${api.address_in}?amount=${amount}`,
         // to, from // if the user wants a custom reciving address
       })
-    },
-    async btcGetInfo() {
-      return cryptapi.btcInfo()
-    },
-    async btcLogs({ callback }) {
-      return cryptapi.btcLogs(callback)
-    },
+    }
   }
 }
