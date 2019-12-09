@@ -23,7 +23,7 @@ module.exports = (config, table) => {
     create(amount, to) {
       assert(amount, 'requires amount')
       assert(lodash.isFinite(amount), 'requires amount')
-      assert(amount > 0, 'requires amount > 0')
+      assert(amount > 0.001, 'requires amount > 0.001')
       assert(to, 'requires to')
 
       const tx = Defaults({ to, amount })
