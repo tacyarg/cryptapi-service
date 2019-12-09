@@ -11,7 +11,10 @@ module.exports = async config => {
   return {
     async handleCallback({ txid, ...params }) {
       console.log('handleCallback', txid, params)
-      return transactions.update(txid, {
+      const tx = transactions.get(txid)
+      assert(tx, `no transaction found using id:${txid}`)
+      return transactions.set({
+        ...tx,
         confirmations: params.confirmations,
         txidIn: params.txid_in,
         txidOut: params.txid_out,
