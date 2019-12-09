@@ -23,7 +23,7 @@ module.exports = async config => {
   // public API
   return {
     async btcUSDExchangeRate({ currency = 'USD' }) {
-      return parseFloat(EXCHANGE_RATES[currency])
+      return EXCHANGE_RATES[currency]
     },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
