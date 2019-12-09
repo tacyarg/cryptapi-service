@@ -4,7 +4,7 @@ const { loop, ONE_MINUTE_MS, parseUSD } = require('../libs/utils')
 
 module.exports = async config => {
   console.log(config)
-  const { callbackURL, btcAddress } = config
+  const { callbackURL } = config
   assert(callbackURL, 'requires callbackURL')
 
   const { transactions, secrets } = require('../models')(config)
@@ -80,18 +80,23 @@ module.exports = async config => {
       amount = parseFloat(amount)
       assert(amount >= config.coinLimit, `requires amount of at least ${config.coinLimit} btc`)
 
+      const fiatValue = getExchangeRates(ticker, 'USD', amount)
+
       // create a tx and secret to pass to our trusted caller.
-      const tx = transactions.create(amount, btcAddress)
+      const address = config[`${ticker}Address`]
+      assert(assert, 'please provide the supported ticker address in your .env')
+
+      const tx = transactions.create(amount, address)
       const secret = secrets.create(tx.id)
 
       // call our payment processor including the secret.
-      const api = await cryptapi._createAddress(ticker, btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, { pending: 1 })
+      const api = await cryptapi._createAddress(ticker, address, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, { pending: 1 })
       assert(api, 'cryptapi._createAddress failure')
       assert(api.address_in, 'cryptapi._createAddress failure')
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
-        fiatValue: getExchangeRates(ticker, 'USD', amount),
+        fiatValue,
         type: 'btc',
         from: api.address_in,
         to: api.address_out,
