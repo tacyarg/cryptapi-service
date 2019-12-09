@@ -15,21 +15,22 @@ module.exports = async config => {
       // does the tx exist? 
       const tx = transactions.get(txid)
       assert(tx, `no transaction found using id:${txid}`)
-      
+
       /// does the secret match?
       const secret = secrets.get(secret)
       assert(secret, `secret not found`)
       assert(secret.txid === txid, `invalid secret found for id:${txid}`)
 
       // if the tx and secret are valid, we allow the caller to update the state.
+      const confirmations = parseInt(params.confirmations)
       return transactions.set({
         ...tx,
-        confirmations: params.confirmations,
+        confirmations,
         txidIn: params.txid_in,
         txidOut: params.txid_out,
         value: params.value,
         valueForwarded: params.value_forwarded,
-        status: params.confirmations > 1 ? 'completed' : 'waitConfirmations'
+        status: confirmations > 1 ? 'completed' : 'waitConfirmations'
       })
     },
     async getTransaction({ transactionid }) {
