@@ -53,6 +53,8 @@ module.exports = async config => {
 
       // call our payment processor including the secret.
       const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, {pending: 1})
+      assert(api, 'cryptapi.btcCreateAddress failure')
+      assert(api.address_in, 'cryptapi.btcCreateAddress failure')
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
