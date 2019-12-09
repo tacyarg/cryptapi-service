@@ -13,7 +13,7 @@ module.exports = async config => {
   loop(async () => {
     const { prices } = await cryptapi.btcInfo()
     const keys = Object.keys(prices)
-    EXCHANGE_RATES = prices.reduce((memo, k) => {
+    EXCHANGE_RATES = keys.reduce((memo, k) => {
       memo[k] = parseFloat(prices[k])
       return memo
     }, {})
