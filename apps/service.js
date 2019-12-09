@@ -1,6 +1,6 @@
 const assert = require('assert')
 const cryptapi = require('cryptapi')()
-// const { loop, ONE_MINUTE_MS } = require('../libs/utils')
+const { loop, ONE_MINUTE_MS } = require('../libs/utils')
 
 module.exports = async config => {
   console.log(config)
@@ -8,6 +8,12 @@ module.exports = async config => {
   assert(callbackURL, 'requires callbackURL')
 
   const { transactions, secrets } = require('../models')(config)
+  let USD_EXCHANGE_RATE = null
+
+  loop(async () => {
+    const { prices } = await cryptapi.btcInfo()
+    USD_EXCHANGE_RATE = parseFloat(prices['USD'])
+  }, ONE_MINUTE_MS)
 
   return {
     async handleCallback({ txid, secret, ...params }) {
@@ -52,12 +58,16 @@ module.exports = async config => {
       const secret = secrets.create(tx.id)
 
       // call our payment processor including the secret.
-      const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, {pending: 1})
+      const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, { pending: 1 })
       assert(api, 'cryptapi.btcCreateAddress failure')
       assert(api.address_in, 'cryptapi.btcCreateAddress failure')
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
+        fiatValue: Number(USD_EXCHANGE_RATE * amount).toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }),
         type: 'btc',
         from: api.address_in,
         to: api.address_out,
