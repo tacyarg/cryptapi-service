@@ -11,7 +11,7 @@ const Defaults = p => {
     callbackURL: null,
     to: null,
     from: null,
-    status: null,
+    status: 'pending', // 'waitConfirmation', 'completed'
     ...p
   }
 }

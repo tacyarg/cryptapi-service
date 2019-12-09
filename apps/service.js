@@ -19,7 +19,8 @@ module.exports = async config => {
         txidIn: params.txid_in,
         txidOut: params.txid_out,
         value: params.value,
-        valueForwarded: params.value_forwarded
+        valueForwarded: params.value_forwarded,
+        status: params.confirmations > 1 ? 'completed' : 'waitConfirmations'
       })
     },
     async getTransaction({ transactionid }) {
