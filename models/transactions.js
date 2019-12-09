@@ -12,6 +12,7 @@ const Defaults = p => {
     to: null,
     from: null,
     status: 'pending', // 'waitConfirmation', 'completed'
+    confirmations: 0,
     ...p
   }
 }
