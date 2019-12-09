@@ -8,16 +8,20 @@ module.exports = async config => {
   assert(callbackURL, 'requires callbackURL')
 
   const { transactions, secrets } = require('../models')(config)
-  let USD_EXCHANGE_RATE = null
+  let EXCHANGE_RATES = {}
 
   loop(async () => {
     const { prices } = await cryptapi.btcInfo()
-    USD_EXCHANGE_RATE = parseFloat(prices['USD'])
+    const keys = Object.keys(prices)
+    EXCHANGE_RATES = prices.reduce((memo, k) => {
+      memo[k] = parseFloat(prices[k])
+      return memo
+    }, {})
   }, ONE_MINUTE_MS)
 
   return {
-    async btcUSDExchangeRate() {
-      return parseFloat(prices['USD'])
+    async btcUSDExchangeRate({ currency = 'USD' }) {
+      return parseFloat(prices[currency])
     },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
@@ -67,7 +71,7 @@ module.exports = async config => {
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
-        fiatValue: Number(USD_EXCHANGE_RATE * amount).toLocaleString('en-US', {
+        fiatValue: Number(EXCHANGE_RATES['USD'] * amount).toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
         }),
