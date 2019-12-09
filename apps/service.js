@@ -23,7 +23,10 @@ module.exports = async config => {
   // public API
   return {
     async btcUSDExchangeRate({ currency = 'USD' }) {
-      return EXCHANGE_RATES[currency]
+      return Number(EXCHANGE_RATES[currency] * amount).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      })
     },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
