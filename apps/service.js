@@ -1,6 +1,6 @@
 const assert = require('assert')
 const cryptapi = require('cryptapi')()
-const { transactions } = require('../models')()
+const { transactions, secrets } = require('../models')()
 // const { loop, ONE_MINUTE_MS } = require('../libs/utils')
 
 module.exports = async config => {
@@ -9,10 +9,19 @@ module.exports = async config => {
   assert(callbackURL, 'requires callbackURL')
 
   return {
-    async handleCallback({ txid, ...params }) {
+    async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
+
+      // does the tx exist? 
       const tx = transactions.get(txid)
       assert(tx, `no transaction found using id:${txid}`)
+      
+      /// does the secret match?
+      const secret = secrets.get(secret)
+      assert(secret, `secret not found`)
+      assert(secret.txid === txid, `invalid secret found for id:${txid}`)
+
+      // if the tx and secret are valid, we allow the caller to update the state.
       return transactions.set({
         ...tx,
         confirmations: params.confirmations,
@@ -36,8 +45,14 @@ module.exports = async config => {
       amount = parseFloat(amount)
       assert(amount >= config.btcLimitAmount, `requires amount of at least ${config.btcLimitAmount} btc`)
 
+      // create a tx and secret to pass to our trusted caller.
       const tx = transactions.create(amount, btcAddress)
-      const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}`, {pending: 1})
+      const secret = secrets.create(tx.id)
+
+      // call our payment processor including the secret.
+      const api = await cryptapi.btcCreateAddress(btcAddress, `${callbackURL}?txid=${tx.id}&secret=${secret.id}`, {pending: 1})
+
+      // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
         type: 'btc',
         from: api.address_in,
