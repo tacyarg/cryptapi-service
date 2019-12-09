@@ -9,9 +9,15 @@ module.exports = async config => {
   assert(callbackURL, 'requires callbackURL')
 
   return {
-    async handleCallback(params) {
-      console.log('CALLBACK', params)
-      return params
+    async handleCallback({ txid, ...params }) {
+      console.log('handleCallback', txid, params)
+      return transactions.update(txid, {
+        conirmations: params.conirmations,
+        txidIn: params.txid_in,
+        txidOut: params.txid_out,
+        value: params.value,
+        valueForwarded: params.value_forwarded
+      })
     },
     async getTransaction({ transactionid }) {
       return transactions.get(transactionid)
