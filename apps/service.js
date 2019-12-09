@@ -1,12 +1,13 @@
 const assert = require('assert')
 const cryptapi = require('cryptapi')()
-const { transactions, secrets } = require('../models')()
 // const { loop, ONE_MINUTE_MS } = require('../libs/utils')
 
 module.exports = async config => {
   console.log(config)
   const { callbackURL, btcAddress } = config
   assert(callbackURL, 'requires callbackURL')
+
+  const { transactions, secrets } = require('../models')(config)
 
   return {
     async handleCallback({ txid, secret, ...params }) {
