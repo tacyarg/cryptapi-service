@@ -44,3 +44,11 @@ btcLimitAmount=0.0001
 yarn service
 npm start service
 ```
+
+# Maintenance 
+The main drawback of [cryptapi](https://cryptapi.io/) is that this service has a requirement to remain online at all times. With its low overhead and simple deployment, this task is easily managed with kubernetes. Additionally, we recommend a management layer be maintained in your application. This service will allow you to recover any missed payments in the event of network failure. **See [cryptapi](https://github.com/tacyarg/cryptapi) For More Details.** 
+
+### NOTICE
+```
+In a future update we plan to attempt "auto-recovery" to handle this event for you. Each "transaction" creates a unique `callbackURL`, doing so, we should be able to recover the complete blockchain history for that address as long as we resume service within a realatively timely manor. For the time being, you will need to do that yourself.
+```
