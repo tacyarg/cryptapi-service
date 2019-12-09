@@ -16,6 +16,9 @@ module.exports = async config => {
   }, ONE_MINUTE_MS)
 
   return {
+    async btcUSDExchangeRate() {
+      return parseFloat(prices['USD'])
+    },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
 
