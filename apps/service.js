@@ -12,7 +12,7 @@ module.exports = async config => {
     async handleCallback({ txid, ...params }) {
       console.log('handleCallback', txid, params)
       return transactions.update(txid, {
-        conirmations: params.conirmations,
+        confirmations: params.confirmations,
         txidIn: params.txid_in,
         txidOut: params.txid_out,
         value: params.value,
@@ -39,7 +39,6 @@ module.exports = async config => {
         from: api.address_in,
         to: api.address_out,
         callbackURL: api.callback_url,
-        status: api.status,
         qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:${api.address_in}?amount=${amount}`
       })
     },
