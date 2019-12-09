@@ -8,8 +8,9 @@ module.exports = async config => {
   assert(callbackURL, 'requires callbackURL')
 
   const { transactions, secrets } = require('../models')(config)
-  let EXCHANGE_RATES = {}
 
+  // cache the exchange rates for btc every min
+  let EXCHANGE_RATES = {}
   loop(async () => {
     const { prices } = await cryptapi.btcInfo()
     const keys = Object.keys(prices)
@@ -19,9 +20,10 @@ module.exports = async config => {
     }, {})
   }, ONE_MINUTE_MS)
 
+  // public API
   return {
     async btcUSDExchangeRate({ currency = 'USD' }) {
-      return parseFloat(prices[currency])
+      return parseFloat(EXCHANGE_RATES[currency])
     },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
