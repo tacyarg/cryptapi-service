@@ -1,6 +1,6 @@
 const assert = require('assert')
 const cryptapi = require('cryptapi')()
-const { loop, ONE_MINUTE_MS } = require('../libs/utils')
+const { loop, ONE_MINUTE_MS, parseUSD } = require('../libs/utils')
 
 module.exports = async config => {
   console.log(config)
@@ -23,10 +23,7 @@ module.exports = async config => {
   // public API
   return {
     async btcUSDExchangeRate({ currency = 'USD' }) {
-      return Number(EXCHANGE_RATES[currency] * amount).toLocaleString('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      })
+      return parseUSD(EXCHANGE_RATES[currency] * amount)
     },
     async handleCallback({ txid, secret, ...params }) {
       console.log('handleCallback', txid, params)
@@ -76,10 +73,7 @@ module.exports = async config => {
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
-        fiatValue: Number(EXCHANGE_RATES['USD'] * amount).toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }),
+        fiatValue: parseUSD(EXCHANGE_RATES['USD'] * amount),
         type: 'btc',
         from: api.address_in,
         to: api.address_out,

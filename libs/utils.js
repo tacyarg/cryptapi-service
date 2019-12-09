@@ -58,7 +58,7 @@ exports.parseEnv = env => {
 
 // TIME SHIT FOR STATS
 
-exports.defaultHourly = function(stats) {
+exports.defaultHourly = function (stats) {
   return lodash.defaults(stats, {
     done: false,
     name: 'hourly',
@@ -70,7 +70,7 @@ exports.defaultHourly = function(stats) {
       .valueOf(),
   })
 }
-exports.defaultDaily = function(stats) {
+exports.defaultDaily = function (stats) {
   return lodash.defaults(stats, {
     done: false,
     name: 'daily',
@@ -82,7 +82,7 @@ exports.defaultDaily = function(stats) {
       .valueOf(),
   })
 }
-exports.defaultWeekly = function(stats) {
+exports.defaultWeekly = function (stats) {
   return lodash.defaults(stats, {
     done: false,
     name: 'weekly',
@@ -94,7 +94,7 @@ exports.defaultWeekly = function(stats) {
       .valueOf(),
   })
 }
-exports.defaultMonthly = function(stats) {
+exports.defaultMonthly = function (stats) {
   return lodash.defaults(stats, {
     done: false,
     name: 'monthly',
@@ -106,7 +106,7 @@ exports.defaultMonthly = function(stats) {
       .valueOf(),
   })
 }
-exports.defaultAllTime = function(stats) {
+exports.defaultAllTime = function (stats) {
   return lodash.defaults(stats, {
     done: false,
     name: 'allTime',
@@ -115,7 +115,7 @@ exports.defaultAllTime = function(stats) {
   })
 }
 
-exports.generateDefaults = function(name) {
+exports.generateDefaults = function (name) {
   switch (name) {
     case 'hourly':
       return exports.defaultHourly()
@@ -130,6 +130,11 @@ exports.generateDefaults = function(name) {
   }
 }
 
-exports.makeID = function(start, end) {
+exports.makeID = function (start, end) {
   return [start, end].join('_')
 }
+
+exports.parseUSD = value => Number(value).toLocaleString('en-US', {
+  style: 'currency',
+  currency: 'USD',
+})
