@@ -26,6 +26,15 @@ module.exports = async config => {
 
   }, ONE_MINUTE_MS)
 
+
+  const listTickers = () => {
+    return Object.keys(EXCHANGE_RATES)
+  }
+
+  const isTickerValid = t => {
+    return EXCHANGE_RATES[t]
+  }
+
   const getExchangeRates = (ticker, currency = 'USD', amount = 1) => {
     const rates = EXCHANGE_RATES[ticker]
     return currency ? parseUSD(rates[currency] * amount) : rates
@@ -37,9 +46,10 @@ module.exports = async config => {
       return cryptapi.getSupportedTickers()
     },
     async getTickerExchangeRates({ ticker, currency, amount }) {
-      assert(ticker, 'ticker not supported.')
-      assert(EXCHANGE_RATES[ticker], 'ticker not supported.')
-      assert(EXCHANGE_RATES[ticker][currency], 'ticker currency not supported.')
+      const _error = `Please provide one of the following tickers: ${listTickers()}`
+      assert(ticker, _error)
+      assert(EXCHANGE_RATES[ticker], _error)
+      assert(EXCHANGE_RATES[ticker][currency], _error)
 
       return getExchangeRates(ticker, currency, amount)
     },
@@ -76,7 +86,10 @@ module.exports = async config => {
     async listTransactionsByType(type = 'btc') {
       return transactions.getBy('type', type)
     },
-    async createTransaction({ ticker = 'btc', amount, to, from }) {
+    async createTransaction({ ticker, amount, to, from }) {
+      assert(ticker, `Please provide one of the following tickers: ${listTickers()}`)
+      assert(isTickerValid(ticker), `Please provide one of the following tickers: ${listTickers()}`)
+
       amount = parseFloat(amount)
       assert(amount >= config.coinLimit, `requires amount of at least ${config.coinLimit} btc`)
 
