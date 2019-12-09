@@ -44,7 +44,7 @@ module.exports = async config => {
     },
     async btcCreateTransaction({ amount, to, from }) {
       amount = parseFloat(amount)
-      assert(amount >= config.btcLimitAmount, `requires amount of at least ${config.btcLimitAmount} btc`)
+      assert(amount >= config.coinLimit, `requires amount of at least ${config.coinLimit} btc`)
 
       // create a tx and secret to pass to our trusted caller.
       const tx = transactions.create(amount, btcAddress)
