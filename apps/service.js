@@ -22,7 +22,7 @@ module.exports = async config => {
 
   // public API
   return {
-    async btcUSDExchangeRate({ currency = 'USD' }) {
+    async btcUSDExchangeRate({ currency = 'USD', amount=1 }) {
       return parseUSD(EXCHANGE_RATES[currency] * amount)
     },
     async handleCallback({ txid, secret, ...params }) {
