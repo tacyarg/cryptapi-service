@@ -36,6 +36,12 @@ module.exports = async config => {
   }
 
   const getExchangeRates = (ticker, currency = 'USD', amount = 1) => {
+    const _error = `Please provide one of the following tickers: ${listTickers()}`
+    assert(ticker, _error)
+    assert(EXCHANGE_RATES[ticker], _error)
+    const currencies = Object.keys(EXCHANGE_RATES[ticker])
+    assert(EXCHANGE_RATES[ticker][currency], `Please provide once of the following currencies: ${currencies}`)
+
     const rates = EXCHANGE_RATES[ticker]
     return currency ? parseUSD(rates[currency] * amount) : rates
   }
@@ -46,11 +52,6 @@ module.exports = async config => {
       return cryptapi.getSupportedTickers()
     },
     async getTickerExchangeRates({ ticker, currency, amount }) {
-      const _error = `Please provide one of the following tickers: ${listTickers()}`
-      assert(ticker, _error)
-      assert(EXCHANGE_RATES[ticker], _error)
-      assert(EXCHANGE_RATES[ticker][currency], _error)
-
       return getExchangeRates(ticker, currency, amount)
     },
     async handleCallback({ txid, secret, ...params }) {
