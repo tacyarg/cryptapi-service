@@ -116,7 +116,8 @@ module.exports = async config => {
         from: api.address_in,
         to: api.address_out,
         callbackURL: api.callback_url,
-        qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:${api.address_in}?amount=${amount}`,
+        qr: `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=bitcoin:${api.address_in}?amount=${amount}`,
+        // qr: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:${api.address_in}?amount=${amount}`,
         // to, from // if the user wants a custom reciving address
       })
     }
