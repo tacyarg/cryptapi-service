@@ -134,7 +134,4 @@ exports.makeID = function (start, end) {
   return [start, end].join('_')
 }
 
-exports.parseUSD = value => Number(value).toLocaleString('en-US', {
-  style: 'currency',
-  currency: 'USD',
-})
+exports.parseUSD = (value=0) => Math.round(Number(value) * 100) / 100

@@ -37,7 +37,8 @@ callbackURL=https://localhost:3000/handleCallback
 port=3000
 name=service
 
-btcLimitAmount=0.0001
+coinLimit=0.001
+currency=USD
 ```
 
 ### 3. Startup

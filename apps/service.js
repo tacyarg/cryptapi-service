@@ -35,7 +35,7 @@ module.exports = async config => {
     return EXCHANGE_RATES[t]
   }
 
-  const getExchangeRates = (ticker, currency = 'USD', amount = 1) => {
+  const getExchangeRates = (ticker, currency = config.currency, amount = 1) => {
     const _error = `Please provide one of the following tickers: ${listTickers()}`
     assert(ticker, _error)
     assert(EXCHANGE_RATES[ticker], _error)
@@ -51,7 +51,7 @@ module.exports = async config => {
     async getSupportedTickers() {
       return cryptapi.getSupportedTickers()
     },
-    async getTickerExchangeRates({ ticker, currency, amount }) {
+    async getTickerExchangeRates({ ticker, currency = config.currency, amount }) {
       return getExchangeRates(ticker, currency, amount)
     },
     async handleCallback({ txid, secret, ...params }) {
@@ -94,7 +94,7 @@ module.exports = async config => {
       amount = parseFloat(amount)
       assert(amount >= config.coinLimit, `requires amount of at least ${config.coinLimit} btc`)
 
-      const fiatValue = getExchangeRates(ticker, 'USD', amount)
+      const currencyValue = getExchangeRates(ticker, config.currency, amount)
 
       // create a tx and secret to pass to our trusted caller.
       const address = config[`${ticker}Address`]
@@ -110,7 +110,8 @@ module.exports = async config => {
 
       // save the caller's resoponse so we can reference it later.
       return transactions.update(tx.id, {
-        fiatValue,
+        currencyValue,
+        currency: config.currency,
         type: 'btc',
         from: api.address_in,
         to: api.address_out,
