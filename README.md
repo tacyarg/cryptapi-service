@@ -23,7 +23,7 @@ Below is a simple guide on how to install and utilize the service.
 ### 1. Installation
 
 ```bash
-yarn add cryptapi-service
+git clone git@github.com:tacyarg/cryptapi-service.git
 ```
 
 ### 2. Setup .ENV
