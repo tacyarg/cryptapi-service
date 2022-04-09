@@ -9,7 +9,7 @@
     "dotenv": "^8.2.0",
     "lodash": "^4.17.21",
     "memtable": "^2.0.0-alpha.12",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "unirest": "^0.6.0",
     "url-join": "^4.0.1",
     "uuid": "^3.3.3"
